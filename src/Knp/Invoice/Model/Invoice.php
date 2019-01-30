@@ -148,6 +148,22 @@ class Invoice {
 		$this->issueDate = $date;
 	}
 
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getIssueDate(): \DateTime
+    {
+        return $this->issueDate;
+    }
+
 	public function setPaidAmount($paid)
 	{
 		$this->paidAmount = $paid;
