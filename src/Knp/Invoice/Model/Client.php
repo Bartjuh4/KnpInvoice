@@ -63,8 +63,8 @@ abstract class Client
     {
         return array(
             'street'  => $this->company_address_street,
-            'city'    => $this->company_address_city,
             'zipcode' => $this->company_address_zipcode,
+            'city'    => $this->company_address_city,
             'country' => $this->company_address_country
         );
     }
