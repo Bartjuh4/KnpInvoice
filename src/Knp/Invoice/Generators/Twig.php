@@ -4,17 +4,24 @@ namespace Knp\Invoice\Generators;
 
 use Knp\Invoice\Generator;
 use Knp\Invoice\Model\Invoice;
+use RuntimeException;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Loader\FilesystemLoader;
+use Twig\TemplateWrapper;
 
 class Twig extends Generator
 {
     public function __construct()
     {
-        if (!class_exists('Twig_Environment')) {
-            throw new \RuntimeException('Twig library is required!');
+        if (!class_exists('\Twig\Environment')) {
+            throw new RuntimeException('Twig library is required!');
         }
 
-        $this->generator = new \Twig_Environment(
-            new \Twig_Loader_Filesystem($this->getTheme())
+        $this->generator = new Environment(
+            new FilesystemLoader($this->getTheme())
         );
     }
 
@@ -34,7 +41,7 @@ class Twig extends Generator
         parent::setTheme($themePath);
 
         $this->generator->setLoader(
-            new \Twig_Loader_Filesystem(array(
+            new FilesystemLoader(array(
                 $themePath,
                 $defaultTheme
             ))
@@ -46,11 +53,11 @@ class Twig extends Generator
         $this->setInvoice($invoice);
         $this->setTemplate($template);
 
-        if (!$template instanceof \Twig_Template) {
+        if (!$template instanceof TemplateWrapper) {
             try {
-                $template = $this->generator->loadTemplate($this->getTemplate());
-            } catch (\Twig_Error_Loader $e) {
-                throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
+                $template = $this->generator->load($this->getTemplate());
+            } catch (LoaderError | RuntimeError | SyntaxError $e) {
+                throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
             }
         }
 
